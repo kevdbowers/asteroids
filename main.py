@@ -1,10 +1,13 @@
 import pygame  #importing necessary libraries, and all magic numbers from constants.py
 from constants import *
+from circleshape import *
+from player import *
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
-    
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  #creating player model
+
     fps = pygame.time.Clock()  #creating in-game clock to restrict framerate
     dt = 0
 
@@ -18,7 +21,8 @@ def main():  #primary function designed to run asteroids
                 return
 
         screen.fill("black")
-        pygame.display.flip  #refreshing game window
+        player.draw(screen)
+        pygame.display.flip()  #refreshing game window
 
         dt = (fps.tick(60) / 1000)  #delaying game loop by 1/60th of a second
 
