@@ -20,8 +20,10 @@ def main():  #primary function designed to run asteroids
             if event.type == pygame.QUIT:
                 return
 
+        #updating game screen visually
         screen.fill("black")
         player.draw(screen)
+        player.update(dt)
         pygame.display.flip()  #refreshing game window
 
         dt = (fps.tick(60) / 1000)  #delaying game loop by 1/60th of a second
