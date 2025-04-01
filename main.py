@@ -1,10 +1,10 @@
-import sys  #importing necessary libraries, and all magic numbers from constants.py
+import sys  #importing necessary libraries, classes, and all magic numbers from constants.py
 import pygame
 from constants import *
-from circleshape import *
-from player import *
-from asteroid import *
-from asteroidfield import *
+from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+from shot import Shot
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
@@ -13,9 +13,12 @@ def main():  #primary function designed to run asteroids
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
+    Shot.containers = (shots, updatable, drawable)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  #creating player model

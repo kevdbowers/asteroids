@@ -1,5 +1,6 @@
 import pygame  #importing necessary libraries, classes, and constants
 from circleshape import CircleShape
+from shot import Shot
 from constants import *
 
 class Player(CircleShape):  #creating player subclass of CircleShape
@@ -21,7 +22,7 @@ class Player(CircleShape):  #creating player subclass of CircleShape
     def rotate(self, dt):  #method to rotate player visual
         self.rotation += PLAYER_TURN_SPEED * dt
 
-    def update(self, dt):  #method to update player location/direction based on user input
+    def update(self, dt):  #method to update player location/direction/action based on user input
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -32,7 +33,15 @@ class Player(CircleShape):  #creating player subclass of CircleShape
             self.move(dt)
         if keys[pygame.K_s]:
             self.move(-dt)
+        
+        if keys[pygame.K_SPACE]:
+            self.shoot()
 
     def move(self, dt):  #method to adjust player position
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
+
+    def shoot(self):  #method to create shots from the player
+        shot = Shot(self.position.x, self.position.y)
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        shot.velocity = forward * PLAYER_SHOOT_SPEED
