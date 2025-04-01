@@ -7,6 +7,7 @@ class Player(CircleShape):  #creating player subclass of CircleShape
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.shot_timer = 0
 
     def triangle(self):  #method to define player visual
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -24,6 +25,7 @@ class Player(CircleShape):  #creating player subclass of CircleShape
 
     def update(self, dt):  #method to update player location/direction/action based on user input
         keys = pygame.key.get_pressed()
+        self.shot_timer -= dt
 
         if keys[pygame.K_a]:
             self.rotate(-dt)
@@ -42,6 +44,9 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         self.position += forward * PLAYER_SPEED * dt
 
     def shoot(self):  #method to create shots from the player
+        if self.shot_timer > 0:
+            return
+        self.shot_timer = PLAYER_SHOOT_COOLDOWN
         shot = Shot(self.position.x, self.position.y)
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         shot.velocity = forward * PLAYER_SHOOT_SPEED

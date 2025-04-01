@@ -7,9 +7,10 @@ This project requires pygame version 2.6.1 and contains:
     a constants.py file containing a list of magic numbers
     a circleshape.py file defining the CircleShape sprite
     a player.py file defining the Player sprite
+    an asteroid.py file defining the Asteroid sprite
+    an asteroidfield.py file defining a field the size of the screen that creates Asteroid sprites
+    a shot.py file defining the Shot Sprite
     a requirements.txt file which shows the required libraries to be installed
-    an asteroid.py file defining the asteroid sprite
-    and asteroidfield.py file defining a field the size of the screen that creates asteroid sprites
 
 To run this program enter the following in the command line: python3 main.py
 Once running the game controls are as follows:
@@ -17,5 +18,6 @@ Once running the game controls are as follows:
     "d" = move backward
     "a" = rotate counter-clockwise
     "d" = rotate clockwise
+    "spacebar" = shoot
 
 This Asteroids game was created as part of a guided Boot.dev project.

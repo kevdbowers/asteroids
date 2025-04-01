@@ -28,8 +28,6 @@ def main():  #primary function designed to run asteroids
     dt = 0
 
     print("Starting Asteroids!")
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
 
     while True:  #running asteroids
         for event in pygame.event.get():  #enabling close button in window
