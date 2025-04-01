@@ -44,7 +44,7 @@ def main():  #primary function designed to run asteroids
             for shot in shots:  #checking for shot collision
                 if shot.collision(asteroid):
                     shot.kill()
-                    asteroid.kill()
+                    asteroid.split()
 
         screen.fill("black")  #redrawing game screen
         for object in drawable:
