@@ -34,16 +34,19 @@ def main():  #primary function designed to run asteroids
             if event.type == pygame.QUIT:
                 return
 
-        #updating game screen visually 
-        updatable.update(dt)
+        updatable.update(dt)  #updating objects
 
-        for asteroid in asteroids:
+        for asteroid in asteroids:  #checking for player collision
             if player.collision(asteroid):
                 print("Game over!")
                 sys.exit()
+            
+            for shot in shots:  #checking for shot collision
+                if shot.collision(asteroid):
+                    shot.kill()
+                    asteroid.kill()
 
-        screen.fill("black")
-
+        screen.fill("black")  #redrawing game screen
         for object in drawable:
             object.draw(screen)
 
