@@ -1,4 +1,5 @@
-import pygame  #importing necessary libraries, and all magic numbers from constants.py
+import sys  #importing necessary libraries, and all magic numbers from constants.py
+import pygame
 from constants import *
 from circleshape import *
 from player import *
@@ -32,9 +33,16 @@ def main():  #primary function designed to run asteroids
             if event.type == pygame.QUIT:
                 return
 
-        #updating game screen visually
-        screen.fill("black")
+        #updating game screen visually 
         updatable.update(dt)
+
+        for asteroid in asteroids:
+            if player.collision(asteroid):
+                print("Game over!")
+                sys.exit()
+
+        screen.fill("black")
+
         for object in drawable:
             object.draw(screen)
 
