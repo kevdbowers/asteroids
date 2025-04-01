@@ -2,6 +2,8 @@ import pygame  #importing necessary libraries, and all magic numbers from consta
 from constants import *
 from circleshape import *
 from player import *
+from asteroid import *
+from asteroidfield import *
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
@@ -9,10 +11,14 @@ def main():  #primary function designed to run asteroids
     #creating and assigning groups to manage objects
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
     Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  #creating player model
+    asteroid_field = AsteroidField()  #creating the object that generates and controls asteroids
 
     fps = pygame.time.Clock()  #creating in-game clock to restrict framerate
     dt = 0

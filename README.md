@@ -8,6 +8,8 @@ This project requires pygame version 2.6.1 and contains:
     a circleshape.py file defining the CircleShape sprite
     a player.py file defining the Player sprite
     a requirements.txt file which shows the required libraries to be installed
+    an asteroid.py file defining the asteroid sprite
+    and asteroidfield.py file defining a field the size of the screen that creates asteroid sprites
 
 To run this program enter the following in the command line: python3 main.py
 Once running the game controls are as follows:
