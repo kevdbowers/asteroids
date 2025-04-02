@@ -4,8 +4,9 @@ from circleshape import CircleShape
 from constants import *
 
 class Asteroid(CircleShape):  #creating Asteroid subclass of CircleShape
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius, point_value = 1):
         super().__init__(x, y, radius)
+        self.point_value = point_value
 
     def draw(self, screen):  #method to draw an individual asteroid
         pygame.draw.circle(screen, "white", self.position, self.radius, 2)
@@ -15,15 +16,19 @@ class Asteroid(CircleShape):  #creating Asteroid subclass of CircleShape
 
     def split(self):  #method to split asteroids above the minimum size into two smaller asteroids
         self.kill()
-        if self.radius <= ASTEROID_MIN_RADIUS:
-            return
         
+        if self.radius <= ASTEROID_MIN_RADIUS:
+            return self.point_value
+        
+        new_point_value = self.point_value * 2
         random_angle = self.velocity.rotate(random.uniform(20, 50))
         random_neg_angle = self.velocity.rotate(-random.uniform(20, 50))
         new_radius = self.radius - ASTEROID_MIN_RADIUS
 
-        asteroid_one = Asteroid(self.position.x, self.position.y, new_radius)
+        asteroid_one = Asteroid(self.position.x, self.position.y, new_radius, new_point_value)
         asteroid_one.velocity = random_angle * 1.2
 
-        asteroid_two = Asteroid(self.position.x, self.position.y, new_radius)
+        asteroid_two = Asteroid(self.position.x, self.position.y, new_radius, new_point_value)
         asteroid_two.velocity = random_neg_angle * 1.2
+
+        return self.point_value

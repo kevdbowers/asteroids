@@ -1,4 +1,6 @@
 import sys  #importing necessary libraries, classes, and all magic numbers from constants.py
+from os import environ
+environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
 from constants import *
 from player import Player
@@ -21,8 +23,12 @@ def main():  #primary function designed to run asteroids
     Shot.containers = (shots, updatable, drawable)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
+    pygame.display.set_caption("Asteroids")
+    font = pygame.font.Font(None, 36)  #creating a font object for scoreboard
+   
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  #creating player model
     asteroid_field = AsteroidField()  #creating the object that generates and controls asteroids
+    point_counter = 0  #keeps track of score
 
     fps = pygame.time.Clock()  #creating in-game clock to restrict framerate
     dt = 0
@@ -38,15 +44,22 @@ def main():  #primary function designed to run asteroids
 
         for asteroid in asteroids:  #checking for player collision
             if player.collision(asteroid):
+                print(f"Final score: {point_counter}")
                 print("Game over!")
                 sys.exit()
             
-            for shot in shots:  #checking for shot collision
+            for shot in shots:  #checking for shot collision and updating score
                 if shot.collision(asteroid):
                     shot.kill()
-                    asteroid.split()
+                    point_counter += asteroid.split()
 
-        screen.fill("black")  #redrawing game screen
+        #redrawing game display
+        screen.fill("black")
+        score_text = font.render(f"Score: {point_counter}", True, "Black", "White")
+        scoreboard = score_text.get_rect()
+        scoreboard.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - 16)
+        screen.blit(score_text, scoreboard)
+
         for object in drawable:
             object.draw(screen)
 
