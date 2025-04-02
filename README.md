@@ -10,6 +10,7 @@ This project requires pygame version 2.6.1 and contains:
     an asteroid.py file defining the Asteroid sprite
     an asteroidfield.py file defining a field the size of the screen that creates Asteroid sprites
     a shot.py file defining the Shot Sprite
+    an overlay.py file defining the methods to generate an overlay
     a requirements.txt file which shows the required libraries to be installed
 
 To run this program enter the following in the command line: python3 main.py

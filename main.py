@@ -7,6 +7,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from overlay import *
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
@@ -24,7 +25,7 @@ def main():  #primary function designed to run asteroids
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
     pygame.display.set_caption("Asteroids")
-    font = pygame.font.Font(None, 36)  #creating a font object for scoreboard
+    font = pygame.font.Font(None, 36)  #creating a font object for overlays
    
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  #creating player model
     asteroid_field = AsteroidField()  #creating the object that generates and controls asteroids
@@ -44,9 +45,11 @@ def main():  #primary function designed to run asteroids
 
         for asteroid in asteroids:  #checking for player collision
             if player.collision(asteroid):
-                print(f"Final score: {point_counter}")
-                print("Game over!")
-                sys.exit()
+                if player.lives == 0 and player.invuln_timer == 0:
+                    print(f"Final score: {point_counter}")
+                    print("Game over!")
+                    sys.exit()
+                player.respawn()
             
             for shot in shots:  #checking for shot collision and updating score
                 if shot.collision(asteroid):
@@ -55,16 +58,14 @@ def main():  #primary function designed to run asteroids
 
         #redrawing game display
         screen.fill("black")
-        score_text = font.render(f"Score: {point_counter}", True, "Black", "White")
-        scoreboard = score_text.get_rect()
-        scoreboard.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - 16)
-        screen.blit(score_text, scoreboard)
-
+        display_score(screen, font, point_counter)
+        display_lives(screen, font, player.lives)
+        
         for object in drawable:
             object.draw(screen)
 
         pygame.display.flip()  #refreshing game window
-
+        
         dt = (fps.tick(60) / 1000)  #delaying game loop by 1/60th of a second
 
 

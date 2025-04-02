@@ -8,6 +8,8 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.shot_timer = 0
+        self.lives = 3
+        self.invuln_timer = PLAYER_INVULN_TIMER
 
     def triangle(self):  #method to define player visual
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -38,6 +40,9 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         
         if keys[pygame.K_SPACE]:
             self.shoot()
+        
+        if self.invuln_timer > 0:
+            self.invuln_timer -= 1        
 
     def move(self, dt):  #method to adjust player position
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -50,3 +55,12 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         shot = Shot(self.position.x, self.position.y)
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         shot.velocity = forward * PLAYER_SHOOT_SPEED
+
+    def respawn(self):  #method to respawn the player if they are destroyed
+        if self.invuln_timer > 0:
+            return
+
+        self.invuln_timer += PLAYER_INVULN_TIMER
+        self.lives -= 1
+        self.position = pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.velocity = pygame.Vector2(0, 0)
