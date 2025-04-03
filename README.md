@@ -11,6 +11,7 @@ This project requires pygame version 2.6.1 and contains:
     an asteroidfield.py file defining a field the size of the screen that creates Asteroid sprites
     a shot.py file defining the Shot Sprite
     an overlay.py file defining the methods to generate an overlay
+    an explosion.py file defining the Explosion sprite, this sprite is a visual effect that requires a LOCAL FILEPATH to a series of nine consecutive numbered images
     a requirements.txt file which shows the required libraries to be installed
 
 To run this program enter the following in the command line: python3 main.py

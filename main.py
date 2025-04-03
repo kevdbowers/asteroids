@@ -8,6 +8,7 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 from overlay import *
+from explosion import Explosion
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
@@ -17,11 +18,12 @@ def main():  #primary function designed to run asteroids
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
-
+    
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable)
+    Explosion.containers = (updatable, drawable)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
     pygame.display.set_caption("Asteroids")
@@ -54,8 +56,9 @@ def main():  #primary function designed to run asteroids
             for shot in shots:  #checking for shot collision and updating score
                 if shot.collision(asteroid):
                     shot.kill()
+                    explosion = Explosion(asteroid.position.x, asteroid.position.y, asteroid.radius)
                     point_counter += asteroid.split()
-
+                    
         #redrawing game display
         screen.fill("black")
         display_score(screen, font, point_counter)

@@ -52,8 +52,9 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         if self.shot_timer > 0:
             return
         self.shot_timer = PLAYER_SHOOT_COOLDOWN
-        shot = Shot(self.position.x, self.position.y)
+
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        shot = Shot(self.position.x + forward.x * self.radius, self.position.y + forward.y * self.radius)
         shot.velocity = forward * PLAYER_SHOOT_SPEED
 
     def respawn(self):  #method to respawn the player if they are destroyed
