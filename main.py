@@ -1,6 +1,6 @@
 import sys  #importing necessary libraries, classes, and all magic numbers from constants.py
 from os import environ
-environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"  #hiding pygame prompt on progam load, must be done before we import pygame
 import pygame
 from constants import *
 from player import Player
@@ -9,6 +9,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from overlay import *
 from explosion import Explosion
+from background import *
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
@@ -63,7 +64,7 @@ def main():  #primary function designed to run asteroids
                     point_counter += asteroid.split()
                     
         #redrawing game display
-        screen.fill("black")
+        get_background(screen)
         display_score(screen, font, point_counter)
         display_lives(screen, font, player.lives)
         

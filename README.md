@@ -12,6 +12,7 @@ This project requires pygame version 2.6.1 and contains:
     a shot.py file defining the Shot Sprite
     an overlay.py file defining the methods to generate an overlay
     an explosion.py file defining the Explosion sprite, this sprite is a visual effect that requires a LOCAL FILEPATH to a series of nine consecutive numbered images
+    a background.py file used to load and display the background image used in the game, this requires a LOCAL FILEPATH to an image
     a requirements.txt file which shows the required libraries to be installed
 
 To run this program enter the following in the command line: python3 main.py

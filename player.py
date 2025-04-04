@@ -56,10 +56,12 @@ class Player(CircleShape):  #creating player subclass of CircleShape
 
         self.position += forward * PLAYER_SPEED * self.acceleration * dt
 
-        if self.acceleration > 0:
+        if self.acceleration >= 0.01:
             self.acceleration -= 0.01
-        if self.acceleration < 0:
+        if self.acceleration <= -0.01:
             self.acceleration += 0.01
+        if -0.01 < self.acceleration < 0.01:
+            self.acceleration = 0
 
     def shoot(self):  #method to create shots from the player
         if self.shot_timer > 0:
