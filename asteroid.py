@@ -32,3 +32,13 @@ class Asteroid(CircleShape):  #creating Asteroid subclass of CircleShape
         asteroid_two.velocity = random_neg_angle * 1.2
 
         return self.point_value
+    
+    def wrap(self):  #overriding parent wrap method with asteroidfield class dimensions
+        if self.position.x < -ASTEROID_MAX_RADIUS:
+            self.position.x = ASTEROID_MAX_RADIUS + SCREEN_WIDTH
+        if self.position.x > ASTEROID_MAX_RADIUS + SCREEN_WIDTH:
+            self.position.x = -ASTEROID_MAX_RADIUS
+        if self.position.y < -ASTEROID_MAX_RADIUS:
+            self.position.y = ASTEROID_MAX_RADIUS + SCREEN_HEIGHT
+        if self.position.y > ASTEROID_MAX_RADIUS + SCREEN_HEIGHT:
+            self.position.y = -ASTEROID_MAX_RADIUS

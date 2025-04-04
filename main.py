@@ -15,14 +15,15 @@ def main():  #primary function designed to run asteroids
 
     #creating and assigning groups to manage objects
     updatable = pygame.sprite.Group()
+    wrapable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     
-    Player.containers = (updatable, drawable)
-    Asteroid.containers = (asteroids, updatable, drawable)
+    Player.containers = (updatable, drawable, wrapable)
+    Asteroid.containers = (asteroids, updatable, drawable, wrapable)
     AsteroidField.containers = (updatable)
-    Shot.containers = (shots, updatable, drawable)
+    Shot.containers = (shots, updatable, drawable, wrapable)
     Explosion.containers = (updatable, drawable)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
@@ -44,6 +45,8 @@ def main():  #primary function designed to run asteroids
                 return
 
         updatable.update(dt)  #updating objects
+        for object in wrapable:
+            object.wrap()
 
         for asteroid in asteroids:  #checking for player collision
             if player.collision(asteroid):
