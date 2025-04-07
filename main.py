@@ -51,10 +51,12 @@ def main():  #primary function designed to run asteroids
 
         for asteroid in asteroids:  #checking for player collision
             if player.collision(asteroid):
-                if player.lives == 0 and player.invuln_timer == 0:
-                    print(f"Final score: {point_counter}")
-                    print("Game over!")
-                    sys.exit()
+                if player.invuln_timer == 0:
+                    explosion = Explosion(player.position.x, player.position.y, player.radius * 1.5)
+                    if player.lives == 0:
+                        print(f"Final score: {point_counter}")
+                        print("Game over!")
+                        sys.exit()
                 player.respawn()
             
             for shot in shots:  #checking for shot collision and updating score

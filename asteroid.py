@@ -7,13 +7,35 @@ class Asteroid(CircleShape):  #creating Asteroid subclass of CircleShape
     def __init__(self, x, y, radius, point_value = 1):
         super().__init__(x, y, radius)
         self.point_value = point_value
-        self.has_split = False
+        self.has_split = False        
+            
+        self.points = [
+            (self.position.x - self.radius, self.position.y),
+            (self.position.x - 0.71 * self.radius, self.position.y + 0.71 * self.radius), 
+            (self.position.x, self.position.y + self.radius),
+            (self.position.x + 0.71 * self.radius, self.position.y + 0.71 * self.radius),
+            (self.position.x + self.radius, self.position.y),
+            (self.position.x + 0.71 * self.radius, self.position.y - 0.71 * self.radius),
+            (self.position.x, self.position.y - self.radius),
+            (self.position.x - 0.71 * self.radius, self.position.y - 0.71 * self.radius)
+            ]
 
     def draw(self, screen):  #method to draw an individual asteroid
-        pygame.draw.circle(screen, "white", self.position, self.radius, 2)
+        pygame.draw.polygon(screen, "burlywood4", self.points, 0)
 
     def update(self, dt):  #method to move an asteroid once created
-        self.position += (self.velocity * dt)
+        self.position += self.velocity * dt
+       
+        self.points = [
+            (self.position.x - self.radius, self.position.y), 
+            (self.position.x - 0.71 * self.radius, self.position.y + 0.71 * self.radius),
+            (self.position.x, self.position.y + self.radius),
+            (self.position.x + 0.71 * self.radius, self.position.y + 0.71 * self.radius),
+            (self.position.x + self.radius, self.position.y),
+            (self.position.x + 0.71 * self.radius, self.position.y - 0.71 * self.radius),
+            (self.position.x, self.position.y - self.radius),
+            (self.position.x - 0.71 * self.radius, self.position.y - 0.71 * self.radius)
+            ]
 
     def wrap(self):  #overriding parent wrap method with asteroidfield class dimensions
         if self.position.x < -ASTEROID_MAX_RADIUS:
