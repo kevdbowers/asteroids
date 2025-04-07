@@ -11,22 +11,27 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         self.lives = 3
         self.invuln_timer = PLAYER_INVULN_TIMER
         self.acceleration = 0
+        self.weapon_type = None
+        self.weapon_timer = 0
+
+        self.forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
 
     def triangle(self):  #method to define player visual
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        a = self.position + forward * self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
+        a = self.position + self.forward * self.radius
+        b = self.position - self.forward * self.radius - self.right
+        c = self.position - self.forward * self.radius + self.right
         return [a, b, c]
     
     def draw(self, screen):  #method to draw player visual
-        pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        pygame.draw.polygon(screen, "azure4", self.triangle(), 0)
 
     def rotate(self, dt):  #method to rotate player visual
         self.rotation += PLAYER_TURN_SPEED * dt
 
     def update(self, dt):  #method to update player location/direction/action based on user input
+        self.forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         keys = pygame.key.get_pressed()
         self.shot_timer -= dt
 
@@ -42,19 +47,25 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         self.move(dt)
         
         if keys[pygame.K_SPACE]:
-            self.shoot()
+            if self.weapon_type == None:
+                self.shoot(self.position)
+            if self.weapon_type == "triple_shot":
+                self.triple_shot()
+            if self.weapon_type == "scatter_shot":
+                self.scatter_shot()
+            if self.weapon_type == "exploding_shot":
+                self.exploding_shot()
         
         if self.invuln_timer > 0:
             self.invuln_timer -= 1        
 
     def move(self, dt):  #method to adjust player position and acceleration
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
         if self.acceleration > 1:
             self.acceleration = 1
         if self.acceleration < -0.5:
             self.acceleration = -0.5
 
-        self.position += forward * PLAYER_SPEED * self.acceleration * dt
+        self.position += self.forward * PLAYER_SPEED * self.acceleration * dt
 
         if self.acceleration >= 0.01:
             self.acceleration -= 0.01
@@ -63,14 +74,48 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         if -0.01 < self.acceleration < 0.01:
             self.acceleration = 0
 
-    def shoot(self):  #method to create shots from the player
+    def shoot(self, position, rotation=0, shot_radius=SHOT_RADIUS):  #method to create shots from the player
         if self.shot_timer > 0:
             return
-        self.shot_timer = PLAYER_SHOOT_COOLDOWN
 
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        shot = Shot(self.position.x + forward.x * self.radius, self.position.y + forward.y * self.radius)
-        shot.velocity = forward * PLAYER_SHOOT_SPEED
+        shot_origin_x = position.x + self.forward.x * self.radius
+        shot_origin_y = position.y + self.forward.y * self.radius
+        shot = Shot(shot_origin_x, shot_origin_y, shot_radius)
+        shot.velocity = self.forward.rotate(rotation) * PLAYER_SHOOT_SPEED
+
+        if self.weapon_type == None:
+            self.shot_timer = PLAYER_SHOOT_COOLDOWN
+
+    def triple_shot(self):  #method to fire a triple shot
+        if self.shot_timer > 0:
+            return
+
+        left_position = self.position - self.forward * self.radius - self.right * 1.5 
+        right_position = self.position - self.forward * self.radius + self.right * 1.5
+        self.shoot(self.position)
+        self.shoot(left_position)
+        self.shoot(right_position)
+        self.shot_timer = PLAYER_SHOOT_COOLDOWN * (3/2)
+
+    def scatter_shot(self):  #method to fire a scatter shot
+        if self.shot_timer > 0:
+            return
+
+        self.shoot(self.position)
+        self.shoot(self.position, 15)
+        self.shoot(self.position, -15)
+        self.shoot(self.position, 30)
+        self.shoot(self.position, -30)
+
+        self.shot_timer = PLAYER_SHOOT_COOLDOWN * (5/2)
+
+    def exploding_shot(self):  #method to fire an exploding shot
+        if self.shot_timer > 0:
+            return
+        
+        self.shoot(self.position, 0, SHOT_RADIUS * 3)
+
+        self.shot_timer = PLAYER_SHOOT_COOLDOWN * (8/2)
 
     def respawn(self):  #method to respawn the player if they are destroyed
         if self.invuln_timer > 0:

@@ -59,7 +59,7 @@ def main():  #primary function designed to run asteroids
             
             for shot in shots:  #checking for shot collision and updating score
                 if shot.collision(asteroid):
-                    shot.kill()
+                    shot.collide()
                     explosion = Explosion(asteroid.position.x, asteroid.position.y, asteroid.radius)
                     point_counter += asteroid.split()
                     
