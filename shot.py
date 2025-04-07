@@ -25,4 +25,4 @@ class Shot(CircleShape):  #creating Shot subclass of CircleShape
     def explode(self):  #method to create an explosion of smaller shots
         for i in range(0, 8):
             shot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
-            shot.velocity = self.forward.rotate(i * 30) * PLAYER_SHOOT_SPEED / 3
+            shot.velocity = self.forward.rotate(i * 45) * PLAYER_SHOOT_SPEED / 3

@@ -1,6 +1,7 @@
 import pygame  #importing necessary libraries, classes, and constants
 from circleshape import CircleShape
 from shot import Shot
+from powerup import Powerup
 from constants import *
 
 class Player(CircleShape):  #creating player subclass of CircleShape
@@ -13,6 +14,8 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         self.acceleration = 0
         self.weapon_type = None
         self.weapon_timer = 0
+        self.have_shield = False
+        self.bomb_count = 0
 
         self.forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
@@ -34,7 +37,7 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         self.right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         keys = pygame.key.get_pressed()
         self.shot_timer -= dt
-
+        
         if keys[pygame.K_a]:
             self.rotate(-dt)
         if keys[pygame.K_d]:
@@ -45,7 +48,7 @@ class Player(CircleShape):  #creating player subclass of CircleShape
             self.acceleration -= 0.02
 
         self.move(dt)
-        
+
         if keys[pygame.K_SPACE]:
             if self.weapon_type == None:
                 self.shoot(self.position)
@@ -55,9 +58,18 @@ class Player(CircleShape):  #creating player subclass of CircleShape
                 self.scatter_shot()
             if self.weapon_type == "exploding_shot":
                 self.exploding_shot()
+
+        if keys[pygame.K_q]:
+            self.bomb()
+        if keys[pygame.K_e]:
+            self.shield()
         
         if self.invuln_timer > 0:
-            self.invuln_timer -= 1        
+            self.invuln_timer -= 1  
+        if self.weapon_timer > 0:
+            self. weapon_timer -= 1    
+        if self.weapon_timer == 0:
+            self.weapon_type = None
 
     def move(self, dt):  #method to adjust player position and acceleration
         if self.acceleration > 1:
@@ -123,5 +135,37 @@ class Player(CircleShape):  #creating player subclass of CircleShape
 
         self.invuln_timer += PLAYER_INVULN_TIMER
         self.lives -= 1
+        self.shot_timer = 0
+        self.weapon_timer = 0
+        self.weapon_type = None
+
         self.position = pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.velocity = pygame.Vector2(0, 0)
+
+    def pickup(self, powerup):  #method to pickup a powerup
+        if powerup.name == self.weapon_type:
+            self.weapon_timer += 600
+        elif powerup.name == "triple_shot":
+            self.weapon_timer = 600
+            self.weapon_type = "triple_shot"
+        elif powerup.name == "scatter_shot":
+            self.weapon_timer = 600
+            self.weapon_type = "scatter_shot"
+        elif powerup.name == "exploding_shot":
+            self.weapon_timer = 900
+            self.weapon_type = "exploding_shot"
+
+        if powerup.name == "shield":
+            self.have_shield = True
+        if powerup.name == "bomb" and self.bomb_count <= 3:
+            self.bomb_count += 1
+
+        powerup.kill()
+
+    def bomb(self):  #method to drop a bomb
+        if self.bomb_count > 0:
+            self.bomb_count -= 1
+
+    def shield(self):  #method to shield the player
+        if self.have_shield == True:
+            self.have_shield = False

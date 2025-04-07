@@ -7,6 +7,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from powerup import Powerup
 from overlay import *
 from explosion import Explosion
 from background import *
@@ -20,16 +21,18 @@ def main():  #primary function designed to run asteroids
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
     
     Player.containers = (updatable, drawable, wrapable)
     Asteroid.containers = (asteroids, updatable, drawable, wrapable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable, wrapable)
     Explosion.containers = (updatable, drawable)
+    Powerup.containers = (powerups, updatable, drawable, wrapable)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
     pygame.display.set_caption("Asteroids")
-    font = pygame.font.Font(None, 36)  #creating a font object for overlays
+    font = pygame.font.Font(None, SCOREBOARD_FONT_SIZE)  #creating a font object for overlays
    
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  #creating player model
     asteroid_field = AsteroidField()  #creating the object that generates and controls asteroids
@@ -64,14 +67,23 @@ def main():  #primary function designed to run asteroids
                     shot.collide()
                     explosion = Explosion(asteroid.position.x, asteroid.position.y, asteroid.radius)
                     point_counter += asteroid.split()
+
+        for powerup in powerups:  #checking for powerup pickups
+            if player.collision(powerup):
+                player.pickup(powerup)
+                asteroid_field.item_counter -= 1
                     
         #redrawing game display
         get_background(screen)
-        display_score(screen, font, point_counter)
-        display_lives(screen, font, player.lives)
-        
+
         for object in drawable:
             object.draw(screen)
+
+        display_score(screen, font, point_counter)
+        display_lives(screen, font, player.lives)
+        display_bombs(screen, font, player.bomb_count)
+        display_shield(screen, font, player.have_shield)
+        display_weapon_timer(screen, font, player.weapon_type, player.weapon_timer)
 
         pygame.display.flip()  #refreshing game window
         
