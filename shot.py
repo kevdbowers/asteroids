@@ -17,7 +17,7 @@ class Shot(CircleShape):  #creating Shot subclass of CircleShape
         if self.distance_travelled > max(SCREEN_WIDTH, SCREEN_HEIGHT):
             self.collide()
 
-    def collide(self):  #method to kill asteroid and check for shot explosion
+    def collide(self):  #method to kill shot and check for shot explosion
         self.kill()
         if self.radius > SHOT_RADIUS:
             self.explode()

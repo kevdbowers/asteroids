@@ -1,4 +1,4 @@
-import pygame  #importing pygame library, Circleshape class from circleshap.py, and all magic numbers from constants.py
+import pygame  #importing pygame library, Circleshape class from circleshape.py, and all magic numbers from constants.py
 from circleshape import CircleShape
 from constants import *
 

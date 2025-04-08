@@ -19,12 +19,16 @@ def display_bombs(display, font, num_bombs):  #method to overlay the number of b
     bombs.center = (SCREEN_WIDTH / 4, SCREEN_HEIGHT - 16)
     display.blit(bombs_text, bombs)
 
-def display_shield(display, font, have_shield):  #method to overlay if shield is available
-    availability = "Unavailable"
-    if have_shield == True:
-        availability = "Available"
-
-    shield_text = font.render(f"Shield: {availability}", True, "cyan3", "white")
+def display_shield(display, font, have_shield, shield_timer):  #method to overlay if shield is available
+    if shield_timer == 0:
+        if have_shield == False:
+            message = "Unavailable"
+        elif have_shield == True:
+            message = "Available"
+    else:
+        message = int(shield_timer / 60)
+    
+    shield_text = font.render(f"Shield: {message}", True, "cyan3", "white")
     shield = shield_text.get_rect()
     shield.center = (SCREEN_WIDTH * (7/16), SCREEN_HEIGHT - 16)
     display.blit(shield_text, shield)

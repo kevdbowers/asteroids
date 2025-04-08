@@ -85,7 +85,6 @@ class AsteroidField(pygame.sprite.Sprite):  #creating the AsteroidField class as
 
         if (self.item_spawn_timer > ITEM_SPAWN_RATE and self.item_counter < 2) or (self.item_spawn_timer > ITEM_SPAWN_RATE * 2 and self.item_counter < 3):
             self.item_spawn_timer = 0
-            print(self.item_counter)
 
             #spawn a new item at a random edge
             edge = random.choice(self.edges)

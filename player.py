@@ -1,10 +1,11 @@
 import pygame  #importing necessary libraries, classes, and constants
+from bomb import Bomb
 from circleshape import CircleShape
+from shield import Shield
 from shot import Shot
-from powerup import Powerup
 from constants import *
 
-class Player(CircleShape):  #creating player subclass of CircleShape
+class Player(CircleShape):  #creating Player subclass of CircleShape
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
@@ -16,6 +17,9 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         self.weapon_timer = 0
         self.have_shield = False
         self.bomb_count = 0
+        self.bomb_timer = 0
+        self.shield_up = None
+        self.shield_timer = 0
 
         self.forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
@@ -67,9 +71,17 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         if self.invuln_timer > 0:
             self.invuln_timer -= 1  
         if self.weapon_timer > 0:
-            self. weapon_timer -= 1    
-        if self.weapon_timer == 0:
+            self.weapon_timer -= 1    
+        if self.weapon_timer <= 0:
             self.weapon_type = None
+
+        if self.bomb_timer > 0:
+            self.bomb_timer -= 1
+        if self.shield_timer > 0:
+            self.shield_timer -= 1
+            self.shield_up.position = self.position
+        if self.shield_timer <= 0 and self.shield_up != None:
+            self.shield_up.kill()
 
     def move(self, dt):  #method to adjust player position and acceleration
         if self.acceleration > 1:
@@ -163,9 +175,16 @@ class Player(CircleShape):  #creating player subclass of CircleShape
         powerup.kill()
 
     def bomb(self):  #method to drop a bomb
+        if self.bomb_count == 0 or self.bomb_timer > 0:
+            return
         if self.bomb_count > 0:
             self.bomb_count -= 1
+            self.bomb_timer += PLAYER_BOMB_COOLDOWN
+            bomb = Bomb(self.position.x, self.position.y)
 
     def shield(self):  #method to shield the player
-        if self.have_shield == True:
-            self.have_shield = False
+        if self.have_shield == False:
+            return
+        self.have_shield = False
+        self.shield_timer += PLAYER_SHIELD_DURATION
+        self.shield_up = Shield(self.position.x, self.position.y)

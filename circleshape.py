@@ -1,4 +1,4 @@
-import pygame  #importing pygame library
+import pygame  #importing pygame library, and all magic numbers from constants.py
 from constants import *
 
 # Base class for game objects

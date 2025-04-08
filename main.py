@@ -1,35 +1,41 @@
-import sys  #importing necessary libraries, classes, and all magic numbers from constants.py
-from os import environ
-environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"  #hiding pygame prompt on progam load, must be done before we import pygame
-import pygame
-from constants import *
-from player import Player
+from os import environ  #hiding pygame prompt on progam load, must be done before we import pygame
+environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+import pygame  #importing necessary libraries, classes, and all magic numbers from constants.py
+import sys  
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
-from shot import Shot
-from powerup import Powerup
-from overlay import *
+from bomb import Bomb
 from explosion import Explosion
+from player import Player
+from powerup import Powerup
+from shield import Shield
+from shot import Shot
 from background import *
+from constants import *
+from overlay import *
 
 def main():  #primary function designed to run asteroids
     pygame.init()  #initializing all imported pygame modules
 
     #creating and assigning groups to manage objects
+    asteroids = pygame.sprite.Group()
+    bombs = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
+    shields = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
     wrapable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-    powerups = pygame.sprite.Group()
-    
-    Player.containers = (updatable, drawable, wrapable)
+        
     Asteroid.containers = (asteroids, updatable, drawable, wrapable)
     AsteroidField.containers = (updatable)
-    Shot.containers = (shots, updatable, drawable, wrapable)
+    Bomb.containers = (bombs, updatable, drawable)
     Explosion.containers = (updatable, drawable)
+    Player.containers = (updatable, drawable, wrapable)
     Powerup.containers = (powerups, updatable, drawable, wrapable)
-
+    Shield.containers = (shields, drawable)
+    Shot.containers = (shots, updatable, drawable, wrapable)
+    
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  #creating game window
     pygame.display.set_caption("Asteroids")
     font = pygame.font.Font(None, SCOREBOARD_FONT_SIZE)  #creating a font object for overlays
@@ -41,11 +47,12 @@ def main():  #primary function designed to run asteroids
     fps = pygame.time.Clock()  #creating in-game clock to restrict framerate
     dt = 0
 
-    print("Starting Asteroids!")
+    print("Starting Asteroids...")
 
     while True:  #running asteroids
         for event in pygame.event.get():  #enabling close button in window
             if event.type == pygame.QUIT:
+                print("Asteroids Closed")
                 return
 
         updatable.update(dt)  #updating objects
@@ -61,6 +68,16 @@ def main():  #primary function designed to run asteroids
                         print("Game over!")
                         sys.exit()
                 player.respawn()
+
+            for bomb in bombs:  #checking for bomb collision
+                if bomb.collision(asteroid):
+                    explosion = Explosion(asteroid.position.x, asteroid.position.y, asteroid.radius)
+                    point_counter += asteroid.split()
+
+            for shield in shields:  #checking for shield collision
+                if shield.collision(asteroid):
+                    explosion = Explosion(asteroid.position.x, asteroid.position.y, asteroid.radius)
+                    asteroid.kill()
             
             for shot in shots:  #checking for shot collision and updating score
                 if shot.collision(asteroid):
@@ -82,7 +99,7 @@ def main():  #primary function designed to run asteroids
         display_score(screen, font, point_counter)
         display_lives(screen, font, player.lives)
         display_bombs(screen, font, player.bomb_count)
-        display_shield(screen, font, player.have_shield)
+        display_shield(screen, font, player.have_shield, player.shield_timer)
         display_weapon_timer(screen, font, player.weapon_type, player.weapon_timer)
 
         pygame.display.flip()  #refreshing game window
